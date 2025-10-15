@@ -144,7 +144,36 @@
                 </div>
 
                 <div id="collapseContatoPrincipal" class="collapse">
-                    <div class="card-body">Conteúdo do bloco de contato ...</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="telefone">Telefone<span style="color:red">*</span></label>
+                                <input type="tel" class="form-control" id="telefone" required name="telefone" placeholder="">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Tipo<span style="color:red">*</span></label>
+                                <select id="tipo_telefone" class="form-control" name="tipo_telefone">
+                                    <option value selected>Selecione</option>
+                                    <option value="residencial" selected>Residencial</option>
+                                    <option value="comercial">Comercial</option> 
+                                    <option value="celular">Celular</option> 
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" required name="email" placeholder="">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Tipo</label>
+                                <select id="tipo_email" class="form-control" name="tipo_email">
+                                    <option value selected>Selecione</option>
+                                    <option value="pessoal" selected>Pessoal</option>
+                                    <option value="comercial">Comercial</option> 
+                                    <option value="outro">Outro</option> 
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
