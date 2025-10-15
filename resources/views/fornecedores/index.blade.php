@@ -53,9 +53,6 @@
 @endsection
 
 @section('js')
-    <script>
-        let fornecedores = @json($fornecedores);
-    </script>
     <script src="{{ asset('assets/js/fornecedores.js') }}"></script>
 @endsection
 
