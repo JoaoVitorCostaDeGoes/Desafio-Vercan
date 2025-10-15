@@ -311,7 +311,7 @@ return [
        
         [
             'text' => 'Home',
-            'url' => '/home',
+            'url' => '/',
             'icon' => 'fas fa-fw fa-home',
         ],
         [
