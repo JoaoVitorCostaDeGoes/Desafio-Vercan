@@ -49,7 +49,21 @@ $(document).ready(function () {
 
     aplicarMascaras();
     controleExibicaoCamposFornecedor();
+    inicializarSummernote();
 
     $('#pjRadio, #pfRadio').on('change', controleExibicaoCamposFornecedor);
     $('#indicadorIE').on('change', atualizarCampoInscricaoEstadual);
 });
+
+
+// Bloco de Observacoes e LiB de Formatacao
+function inicializarSummernote() {
+    $('#observacaoEditor').summernote({
+        height: 200, 
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']], 
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['undo', ['undo', 'redo']] 
+        ]
+    });
+}

@@ -23,7 +23,7 @@
                     </div>
                 </div>
 
-                <div id="collapseFornecedor" class="collapse">
+                <div id="collapseFornecedor" class="collapse show">
                     <div class="card-body">
                         
                         <div class="mb-4">
@@ -188,8 +188,12 @@
                     </div>
                 </div>
 
-                <div id="collapseObservacao" class="collapse">
-                    <div class="card-body">Conteúdo das observações... </div>
+                <div id="collapseObservacao" class="collapse show">
+                    <div class="card-body">
+                        
+                        <textarea id="observacaoEditor" name="observacao" class="form-control" rows="8"></textarea>
+                        
+                        </div>
                 </div>
             </div>
 
@@ -201,8 +205,13 @@
     </form>
 @endsection
 
+@section('css')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
+@endsection
+
 @section('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <script src="{{ asset('assets/js/cadastrar_fornecedor.js') }}"></script>
 @endsection
 
