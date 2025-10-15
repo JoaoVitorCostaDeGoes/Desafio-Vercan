@@ -82,7 +82,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => '',
+            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -109,7 +109,7 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => '',
+            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
             'width' => 60,
@@ -316,7 +316,7 @@ return [
         ],
         [
             'text' => 'Fornecedores',
-            'url' => '/fornecedores',
+            'url' => '/dashboard/fornecedores',
             'icon' => 'fas fa-fw fa-users',
         ],
         [
