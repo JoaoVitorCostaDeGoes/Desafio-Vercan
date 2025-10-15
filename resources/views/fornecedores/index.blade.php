@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="mb-3 text-right">
-        <a href="#" class="btn btn-success px-3"><i class="mx-1 fas fa-plus"></i>Cadastrar</a>
+        <a href="{{ route('fornecedores.create') }}" class="btn btn-success px-3"><i class="mx-1 fas fa-plus"></i>Cadastrar</a>
     </div>
 
     <table id="tabela-fornecedores" class="table table-striped">

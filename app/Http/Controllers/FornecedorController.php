@@ -38,7 +38,7 @@ class FornecedorController extends Controller
      */
     public function create()
     {
-        //
+        return view('fornecedores.cadastrar');
     }
 
     /**
@@ -46,7 +46,7 @@ class FornecedorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request);
     }
 
     /**
