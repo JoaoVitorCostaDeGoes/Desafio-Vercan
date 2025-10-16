@@ -2,9 +2,11 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Endereco extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'fornecedor_id',
@@ -20,7 +22,7 @@ class Endereco extends Model
         'condominio_endereco',
         'condominio_numero',
     ];
-    
+
     protected $primaryKey = 'fornecedor_id';
     public $incrementing = false;
     protected $guarded = [];

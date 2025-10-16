@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fornecedor extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'fornecedores';
 

@@ -10,6 +10,7 @@ use App\Models\Estado;
 use App\Models\Fornecedor;
 use App\Models\FornecedorPf;
 use App\Models\FornecedorPj;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -21,7 +22,7 @@ class FornecedorController extends Controller
     public function index()
     {
         $fornecedores = Fornecedor::with(['pessoaFisica', 'pessoaJuridica'])->WhereNull('deleted_at')->get()->toArray();
-        //dd($fornecedores);
+       
 
         return view('fornecedores.index', compact('fornecedores'));
     }
@@ -81,9 +82,19 @@ class FornecedorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Fornecedor $fornecedor)
     {
-        //
+        $fornecedor->load([
+            'pessoaJuridica', 
+            'pessoaFisica', 
+            'endereco.estado', 
+            'endereco.cidade', 
+            'contatos'
+        ]);
+
+        dd($fornecedor);
+
+        
     }
 
     /**
@@ -105,9 +116,19 @@ class FornecedorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy($fornecedor_id)
+    {   
+        try{
+
+            $fornecedor = Fornecedor::findOrFail($fornecedor_id);
+            $fornecedor->delete();
+
+            return response()->json(['success' => 'Fornecedor excluído com sucesso.']);
+
+        }catch(Exception $e){
+            return response()->json(['error' => 'Erro ao excluir fornecedor: ' . $e->getMessage()], 500);
+        }
+        
     }
 
 

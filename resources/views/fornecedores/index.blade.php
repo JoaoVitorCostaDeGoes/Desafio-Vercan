@@ -47,16 +47,23 @@
                         @endif
                     @endif
                     <td class="text-center">
-                        <a href="{{ route('fornecedores.show', $fornecedor['id']) }}" class="btn btn-sm btn-info">
+                        <a href="{{ route('fornecedores.show', $fornecedor['id']) }}" class="btn btn-sm btn-info" title="Ver Detalhes">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <a href="#" class="btn btn-sm btn-warning">
+                        
+                        <a href="{{ route('fornecedores.edit', $fornecedor['id']) }}" class="btn btn-sm btn-warning" title="Editar Fornecedor">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <button class="btn btn-sm btn-danger">
+                        
+                        <button class="btn btn-sm btn-danger delete-fornecedor" data-id="{{ $fornecedor['id'] }}" title="Excluir Fornecedor">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
+
+                    <form id="delete-form-{{ $fornecedor['id'] }}" action="{{ route('fornecedores.destroy', $fornecedor['id']) }}" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
                 </tr>
             @endforeach
         </tbody>
@@ -65,6 +72,7 @@
 @endsection
 
 @section('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/fornecedores.js') }}"></script>
 @endsection
 
