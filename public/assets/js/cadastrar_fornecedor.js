@@ -29,6 +29,63 @@ function buscarCEP() {
     });
 }
 
+function buscarCNPJ() {
+    let cnpj = $('#cnpj').val().replace(/\D/g, '');
+
+    if (cnpj.length !== 14) {
+        alert("CNPJ inválido. Certifique-se de digitar todos os números.");
+        return;
+    }
+
+    $('#razaoSocial').val('...');
+    $('#nomeFantasia').val('...');
+    $('#situacaoCnpj').val('...');
+
+    $.ajax({
+        url: `https://www.receitaws.com.br/v1/cnpj/${cnpj}`,
+        dataType: 'jsonp', 
+        success: function(data) {
+            if (data.status === 'OK') {
+
+                console.log(data)
+                $('#razaoSocial').val(data.nome);
+                $('#nomeFantasia').val(data.fantasia);
+                $('#situacaoCnpj').val(data.situacao);
+                
+                $('#cep').val(data.cep);
+                $('#logradouro').val(data.logradouro);
+                $('#bairro').val(data.bairro);
+                $('#uf').val(data.uf).trigger('change');
+
+                $('#indicadorIE').focus();
+                
+            } else {
+                marcarErroEFoco('#cnpj', '#collapseFornecedor', 'CNPJ não encontrado');
+                limparCamposCNPJ();
+                limparCamposEndereco();
+            }
+        },
+        error: function() {
+            marcarErroEFoco('#cnpj', '#collapseFornecedor', "Erro ao consultar o CNPJ. Tente novamente.");
+            limparCamposCNPJ();
+            limparCamposEndereco();
+        }
+    });
+}
+
+function limparCamposCNPJ() {
+    $('#razaoSocial').val('');
+    $('#nomeFantasia').val('');
+    $('#situacaoCnpj').val('');
+}
+
+function limparCamposEndereco() {
+    $('#logradouro').val('');
+    $('#bairro').val('');
+    $('#cidade').val('').attr('disabled', true); 
+    $('#uf').val('').trigger('change');
+}
+
 function controleExibicaoCamposFornecedor(){
     const pjRadio = $('#pjRadio');
     const camposPj = $('#campos-pj');
@@ -106,6 +163,7 @@ $(document).ready(function () {
     $('#indicadorIE').on('change', atualizarCampoInscricaoEstadual);
     $('#condominio').on('change', controleExibicaoCamposCondominio);
     $('#cep').on('blur', buscarCEP);
+    $('#cnpj').on('blur', buscarCNPJ);
 
 });
 
