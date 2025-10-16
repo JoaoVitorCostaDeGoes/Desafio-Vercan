@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Estado;
 use Illuminate\Http\Request;
 
 class FornecedorController extends Controller
@@ -37,8 +38,10 @@ class FornecedorController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        return view('fornecedores.cadastrar');
+    {   
+
+        $estados = Estado::orderBy('nome')->get();
+        return view('fornecedores.cadastrar', compact('estados'));
     }
 
     /**

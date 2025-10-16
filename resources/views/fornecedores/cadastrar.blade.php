@@ -239,6 +239,9 @@
                                 <label for="uf">UF<span style="color: red">*</span></label>
                                 <select id="uf" class="form-control select2" name="endereco_uf">
                                     <option value="Selecione">Selecione</option>
+                                    @foreach ($estados as $estado)
+                                         <option value="{{ $estado->uf }}">{{ $estado->nome }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-3">

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\FornecedorController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -12,6 +13,8 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('dashboard')->group(function(){
         Route::resource('fornecedores', FornecedorController::class);
     });
+
+    Route::get('/buscarCidadesPorEstado/{uf}', [HomeController::class, 'buscarCidades'])->name('buscarCidades');
 });
 
 Auth::routes();

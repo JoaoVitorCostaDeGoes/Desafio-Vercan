@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cidade;
+use App\Models\Estado;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,5 +26,16 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function buscarCidades($uf){
+        $estadoSelecionado = Estado::where('uf', $uf)
+                                        ->value('id');
+
+        $cidadesDoEstado = Cidade::where('estado_id', $estadoSelecionado)
+                                    ->orderBy('nome', 'asc')
+                                    ->get();
+        
+        return response()->json($cidadesDoEstado);
     }
 }

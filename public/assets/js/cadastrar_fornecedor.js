@@ -1,15 +1,3 @@
-//Mock de testes de Estado
-const estados = [
-    { id: 'AC', text: 'Acre' }, { id: 'AL', text: 'Alagoas' }, { id: 'AP', text: 'Amapá' },
-    { id: 'AM', text: 'Amazonas' }, { id: 'BA', text: 'Bahia' }, { id: 'CE', text: 'Ceará' },
-    { id: 'DF', text: 'Distrito Federal' }, { id: 'ES', text: 'Espírito Santo' }, { id: 'GO', text: 'Goiás' },
-    { id: 'MA', text: 'Maranhão' }, { id: 'MT', text: 'Mato Grosso' }, { id: 'MS', text: 'Mato Grosso do Sul' },
-    { id: 'MG', text: 'Minas Gerais' }, { id: 'PA', text: 'Pará' }, { id: 'PB', text: 'Paraíba' },
-    { id: 'PR', text: 'Paraná' }, { id: 'PE', text: 'Pernambuco' }, { id: 'PI', text: 'Piauí' },
-    { id: 'RJ', text: 'Rio de Janeiro' }, { id: 'RN', text: 'Rio Grande do Norte' }, { id: 'RS', text: 'Rio Grande do Sul' },
-    { id: 'RO', text: 'Rondônia' }, { id: 'RR', text: 'Roraima' }, { id: 'SC', text: 'Santa Catarina' },
-    { id: 'SP', text: 'São Paulo' }, { id: 'SE', text: 'Sergipe' }, { id: 'TO', text: 'Tocantins' }
-];
 
 function buscarCEP() {
     let cep = $('#cep').val().replace(/\D/g, '');
@@ -29,10 +17,11 @@ function buscarCEP() {
                 $('#logradouro').val(data.logradouro);
                 $('#bairro').val(data.bairro);
                 $('#uf').val(data.uf).trigger('change'); 
+
                 setTimeout(function() {
-                    $('#cidade').val(data.localidade).attr('disabled', false).trigger('change');
+                    $('#cidade').val(data.ibge).attr('disabled', false).trigger('change');
                     $('#numero').focus();
-                }, 500);
+                }, 1000);
             } else {
                 alert("CEP não encontrado.");
             }
@@ -133,21 +122,14 @@ function inicializarSummernote() {
     });
 }
 
-// Função MOCK: Simula a busca de cidades no backend
-function mockCidades(uf) {
-    if (uf === 'SP') {
-        return [{ id: 'SaoPaulo', text: 'São Paulo' }, { id: 'Campinas', text: 'Campinas' }];
-    } else if (uf === 'RJ') {
-        return [{ id: 'RioJaneiro', text: 'Rio de Janeiro' }, { id: 'Niteroi', text: 'Niterói' }];
-    } else {
-        return [{ id: uf + 'Cidade1', text: 'Cidade ' + uf + ' 1' }];
-    }
-}
-
 function configurarUFAndCidades() {
     $('#uf').select2({
-        data: estados,
         placeholder: "Selecione a UF",
+        theme: "bootstrap4" 
+    });
+
+    $('#cidade').select2({
+        placeholder: "Selecione a Cidade",
         theme: "bootstrap4" 
     });
 
@@ -157,14 +139,27 @@ function configurarUFAndCidades() {
         cidadeSelect.empty().append('<option value="">Carregando...</option>').attr('disabled', true);
 
         if (ufSelecionada) {
-            setTimeout(function() {
-                const cidadesMock = mockCidades(ufSelecionada); 
-                cidadeSelect.empty().append('<option value="">Selecione</option>');
-                cidadesMock.forEach(c => cidadeSelect.append(new Option(c.text, c.id)));
-                cidadeSelect.attr('disabled', false);
-            }, 300); 
+            $.ajax({
+                method: 'GET',
+                url: '/buscarCidadesPorEstado/'+ufSelecionada,
+                dataType: 'json',
+                success: function(response){
+                    let cidades = response;
+
+                    cidadeSelect.empty().append('<option value="Selecione">Selecione</option>');
+                    cidades.forEach(city => {
+                        cidadeSelect.append(`<option value='${city.codigo_ibge}'>${city.nome}</option>`);
+                    });
+
+                    cidadeSelect.prop('disabled', false);
+                },
+                error: function(xhr, status, error){
+                    console.error('Erro ao buscar cidades:', error, status);
+                }
+
+            });
         } else {
-            cidadeSelect.empty().append('<option value="">Selecione</option>');
+            cidadeSelect.empty().append('<option value="Selecione">Selecione</option>');
         }
     });
 }
