@@ -18,7 +18,7 @@
                     <h3 class="card-title mb-0">Dados do Fornecedor</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" aria-label="Toggle">
-                            <i class="fas fa-plus"></i> 
+                            <i class="fas fa-minus"></i> 
                         </button>
                     </div>
                 </div>
@@ -138,12 +138,12 @@
                     <h3 class="card-title mb-0">Contato Principal</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool">
-                            <i class="fas fa-plus"></i>
+                            <i class="fas fa-minus"></i>
                         </button>
                     </div>
                 </div>
 
-                <div id="collapseContatoPrincipal" class="collapse">
+                <div id="collapseContatoPrincipal" class="collapse show">
                     <div class="card-body">
                         <div class="row">
                             <div class="form-group col-md-3">
@@ -182,28 +182,95 @@
                     <h3 class="card-title mb-0">Contatos Adicionais</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool">
-                            <i class="fas fa-plus"></i>
+                            <i class="fas fa-minus"></i>
                         </button>
                     </div>
                 </div>
 
-                <div id="collapseContatosAdicionais" class="collapse">
+                <div id="collapseContatosAdicionais" class="collapse show">
                     <div class="card-body">Conteúdo dos contatos adicionais...</div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="d-flex justify-content-between p-3 align-items-center card-toggle" data-toggle="collapse" data-target="#collapseEndereco" aria-expanded="false" aria-controls="collapseEndereco" style="cursor: pointer;">
-                    <h3 class="card-title mb-0">Dados do Endereço</h3>
+                <div class="d-flex justify-content-between p-3 align-items-center card-toggle" 
+                    data-toggle="collapse" data-target="#collapseEndereco" 
+                    aria-expanded="false" aria-controls="collapseEndereco" style="cursor: pointer;">
+                    <h3 class="card-title mb-0">Dados de Endereço</h3>
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool">
-                            <i class="fas fa-plus"></i>
+                        <button type="button" class="btn btn-tool" aria-label="Toggle">
+                            <i class="fas fa-minus"></i> 
                         </button>
                     </div>
                 </div>
 
-                <div id="collapseEndereco" class="collapse">
-                    <div class="card-body">Conteúdo do endereço...</div>
+                <div id="collapseEndereco" class="collapse show">
+                    <div class="card-body">
+                        
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="cep">CEP<span style="color: red">*</span></label>
+                                <input type="text" class="form-control" id="cep" name="endereco_cep" placeholder="">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="logradouro">Logradouro<span style="color: red">*</span></label>
+                                <input type="text" class="form-control" id="logradouro" name="endereco_logradouro" placeholder="">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="numero">Número<span style="color: red">*</span></label>
+                                <input type="text" class="form-control" id="numero" name="endereco_numero" placeholder="">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="complemento">Complemento</label>
+                                <input type="text" class="form-control" id="complemento" name="endereco_complemento" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="bairro">Bairro<span style="color: red">*</span></label>
+                                <input type="text" class="form-control" id="bairro" name="endereco_bairro" placeholder="">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="pontoReferencia">Ponto de Referência</label>
+                                <input type="text" class="form-control" id="pontoReferencia" name="endereco_ponto_referencia" placeholder="">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="uf">UF<span style="color: red">*</span></label>
+                                <select id="uf" class="form-control select2" name="endereco_uf">
+                                    <option value="">Selecione</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="cidade">Cidade<span style="color: red">*</span></label>
+                                <select id="cidade" class="form-control select2" name="endereco_cidade" disabled>
+                                    <option value="">Selecione</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="condominio">Condomínio?<span style="color: red">*</span></label>
+                                <select id="condominio" class="form-control" name="condominio_sim_nao">
+                                    <option value="Selecione">Selecione</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </div>
+                            
+                            <div id="campos-condominio" class="row col-md-9 m-0 p-0" style="display: none;">
+                                <div class="form-group col-md-5">
+                                    <label for="enderecoCondominio">Endereço<span style="color: red">*</span></label>
+                                    <input type="text" class="form-control" id="enderecoCondominio" name="condominio_endereco" placeholder="">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="numeroCondominio">Número<span style="color: red">*</span></label>
+                                    <input type="text" class="form-control" id="numeroCondominio" name="condominio_numero" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -212,7 +279,7 @@
                     <h3 class="card-title mb-0">Observações</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool">
-                            <i class="fas fa-plus"></i>
+                            <i class="fas fa-minus"></i>
                         </button>
                     </div>
                 </div>
@@ -236,6 +303,8 @@
 
 @section('css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
 @endsection
 
 @section('js')
