@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFornecedorRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Contato;
+use App\Models\Endereco;
 use App\Models\Estado;
+use App\Models\Fornecedor;
+use App\Models\FornecedorPf;
+use App\Models\FornecedorPj;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FornecedorController extends Controller
 {
@@ -13,23 +20,8 @@ class FornecedorController extends Controller
      */
     public function index()
     {
-        //Mockando fornecedores para testar o dataTable
-        $fornecedores = [
-            [
-                'id' => 1,
-                'razao_social' => 'Vercan Tecnologia LTDA',
-                'fantasia' => 'Vercan',
-                'cnpj' => '12.345.678/0001-90',
-                'ativo' => true
-            ],
-            [
-                'id' => 2,
-                'razao_social' => 'Alfa Distribuidora',
-                'fantasia' => 'Alfa',
-                'cnpj' => '98.765.432/0001-00',
-                'ativo' => false
-            ]
-        ];
+        $fornecedores = Fornecedor::with(['pessoaFisica', 'pessoaJuridica'])->WhereNull('deleted_at')->get()->toArray();
+        //dd($fornecedores);
 
         return view('fornecedores.index', compact('fornecedores'));
     }
@@ -47,9 +39,43 @@ class FornecedorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreFornecedorRequest $request)
     {
-        dd($request);
+        $dadosValidados = $request->validated();
+
+        DB::beginTransaction();
+
+        try {
+            $fornecedor = Fornecedor::create([
+                'tipo_pessoa' => $dadosValidados['tipoPessoa'],
+                'observacao' => $dadosValidados['observacao'] ?? null,
+            ]);
+
+            if ($dadosValidados['tipoPessoa'] === 'PJ') {
+                $this->createPessoaJuridica($fornecedor, $dadosValidados);
+            } else {
+                $this->createPessoaFisica($fornecedor, $dadosValidados);
+            }
+
+            $this->createContatos($fornecedor, $dadosValidados);
+
+            $this->createEndereco($fornecedor, $dadosValidados);
+
+            DB::commit();
+
+            return redirect()
+                ->route('fornecedores.index')
+                ->with('success', 'Fornecedor cadastrado com sucesso! ID: ' . $fornecedor->id);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            dd($e);
+
+            return back()
+                ->withInput()
+                ->with('error', 'Erro ao cadastrar fornecedor. Tente novamente, verifique todos os campos!');
+        }
     }
 
     /**
@@ -82,5 +108,98 @@ class FornecedorController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+
+    // funcoes auxiliares
+    protected function createPessoaJuridica(Fornecedor $fornecedor, array $data): void
+    {
+        FornecedorPj::create([
+            'fornecedor_id' => $fornecedor->id,
+            'cnpj' => $data['cnpj'],
+            'razao_social' => $data['razao_social'],
+            'nome_fantasia' => $data['nome_fantasia'],
+            'indicador_ie' => $data['indicador_ie'],
+            'inscricao_estadual' => $data['inscricao_estadual'] ?? null,
+            'inscricao_municipal' => $data['inscricao_municipal'] ?? null,
+            'situacao_cnpj' => $data['situacao_cnpj'] ?? null,
+            'recolhimento' => $data['recolhimento'],
+            'ativo' => $data['ativo_pj'] ?? true,
+        ]);
+    }
+
+    
+    protected function createPessoaFisica(Fornecedor $fornecedor, array $data): void
+    {
+        FornecedorPf::create([
+            'fornecedor_id' => $fornecedor->id,
+            'cpf' => $data['cpf'],
+            'nome' => $data['nome_pf'],
+            'apelido' => $data['apelido'] ?? null,
+            'rg' => $data['rg'],
+            'ativo' => $data['ativo_pf'] ?? true,
+        ]);
+    }
+
+    protected function createContatos(Fornecedor $fornecedor, array $data): void
+    {
+        $contatos = [];
+
+        // 4.1. Contato Principal (Telefone)
+        $contatos[] = [
+            'fornecedor_id' => $fornecedor->id,
+            'contato' => $data['telefone'],
+            'tipo_contato' => 'telefone',
+            'rotulo' => $data['tipo_telefone'],
+            'principal' => true,
+        ];
+        
+        // 4.2. Contato Principal (E-mail)
+        if (!empty($data['email'])) {
+            $contatos[] = [
+                'fornecedor_id' => $fornecedor->id,
+                'contato' => $data['email'],
+                'tipo_contato' => 'email',
+                'rotulo' => 'Principal',
+                'principal' => true,
+            ];
+        }
+
+        // 4.3. Contatos Adicionais
+        if (!empty($data['contatos_adicionais'])) {
+            foreach ($data['contatos_adicionais'] as $contatoAdicional) {
+                // Tenta determinar o tipo do contato (simplificado)
+                $tipo = filter_var($contatoAdicional['valor'], FILTER_VALIDATE_EMAIL) ? 'email' : 'telefone';
+
+                $contatos[] = [
+                    'fornecedor_id' => $fornecedor->id,
+                    'contato' => $contatoAdicional['valor'],
+                    'tipo_contato' => $tipo,
+                    'rotulo' => $contatoAdicional['rotulo'] ?? 'Adicional',
+                    'principal' => false,
+                ];
+            }
+        }
+        
+        // Inserção em massa na tabela contatos
+        Contato::insert($contatos); 
+    }
+
+    protected function createEndereco(Fornecedor $fornecedor, array $data): void
+    {
+        Endereco::create([
+            'fornecedor_id' => $fornecedor->id,
+            'cep' => $data['endereco_cep'],
+            'logradouro' => $data['endereco_logradouro'],
+            'numero' => $data['endereco_numero'],
+            'bairro' => $data['endereco_bairro'],
+            'ponto_referencia' => $data['ponto_referencia'] ?? null,
+            'estado_id' => $data['estado_id'],
+            'cidade_id' => $data['cidade_id'],
+            'condominio_sn' => $data['condominio_sim_nao'],
+            'condominio_endereco' => $data['condominio_endereco'] ?? null,
+            'condominio_numero' => $data['condominio_numero'] ?? null,
+        ]);
     }
 }

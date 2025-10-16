@@ -24,16 +24,28 @@
         <tbody>
             @foreach ($fornecedores as $fornecedor)
                 <tr>
-                    <td>{{ $fornecedor['razao_social'] }}</td>
-                    <td>{{ $fornecedor['fantasia'] }}</td>
-                    <td>{{ $fornecedor['cnpj'] }}</td>
-                    <td>
-                        @if($fornecedor['ativo'])
-                            <span class="font-weight-bold">Sim</span>
+                    @if($fornecedor['tipo_pessoa'] == 'PF')
+                        <td>{{ $fornecedor['pessoa_fisica']['nome'] }}</td>
+                        <td>{{ $fornecedor['pessoa_fisica']['apelido'] }}</td>
+                        <td>{{ $fornecedor['pessoa_fisica']['cpf'] }}</td>
+
+                        @if($fornecedor['pessoa_fisica']['ativo'])
+                            <td><span class="font-weight-bold">Sim</span></td>
                         @else
-                            <span >Não</span>
+                            <td><span >Não</span></td>
                         @endif
-                    </td>
+
+                    @else
+                        <td>{{ $fornecedor['pessoa_juridica']['razao_social'] }}</td>
+                        <td>{{ $fornecedor['pessoa_juridica']['fantasia'] }}</td>
+                        <td>{{ $fornecedor['pessoa_juridica']['cnpj'] }}</td>
+
+                        @if($fornecedor['pessoa_juridica']['ativo'])
+                            <td><span class="font-weight-bold">Sim</span></td>
+                        @else
+                            <td><span >Não</span></td>
+                        @endif
+                    @endif
                     <td class="text-center">
                         <a href="{{ route('fornecedores.show', $fornecedor['id']) }}" class="btn btn-sm btn-info">
                             <i class="fas fa-eye"></i>

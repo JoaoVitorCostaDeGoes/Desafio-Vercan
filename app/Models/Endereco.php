@@ -5,6 +5,22 @@ use Illuminate\Database\Eloquent\Model;
 class Endereco extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'fornecedor_id',
+        'cep',
+        'logradouro',
+        'numero',
+        'complemento',
+        'bairro',
+        'ponto_referencia',
+        'estado_id',
+        'cidade_id',
+        'condominio_sn',
+        'condominio_endereco',
+        'condominio_numero',
+    ];
+    
     protected $primaryKey = 'fornecedor_id';
     public $incrementing = false;
     protected $guarded = [];

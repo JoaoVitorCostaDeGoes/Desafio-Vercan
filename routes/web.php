@@ -5,6 +5,7 @@ use App\Http\Controllers\FornecedorController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
+Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -17,4 +18,4 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/buscarCidadesPorEstado/{uf}', [HomeController::class, 'buscarCidades'])->name('buscarCidades');
 });
 
-Auth::routes();
+

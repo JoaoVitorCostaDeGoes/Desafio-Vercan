@@ -23,8 +23,30 @@ function buscarCEP() {
                     $('#numero').focus();
                 }, 1000);
             } else {
-                alert("CEP não encontrado.");
+                Swal.fire({
+                    icon: 'warning', 
+                    title: "CEP não encontrado.",
+                    toast: true,           
+                    position: 'top-end',   
+                    showConfirmButton: false, 
+                    timer: 4000,           
+                    timerProgressBar: true
+                });
             }
+        }, error: function(){
+            
+            Swal.fire({
+                icon: 'warning', 
+                title: "Erro Na API, favor digitar manualmente os campos",
+                toast: true,           
+                position: 'top-end',   
+                showConfirmButton: false, 
+                timer: 4000,           
+                timerProgressBar: true
+            });
+
+            limparCamposEndereco();
+            
         }
     });
 }
@@ -33,7 +55,15 @@ function buscarCNPJ() {
     let cnpj = $('#cnpj').val().replace(/\D/g, '');
 
     if (cnpj.length !== 14) {
-        alert("CNPJ inválido. Certifique-se de digitar todos os números.");
+        Swal.fire({
+            icon: 'warning', 
+            title: "CNPJ inválido. Certifique-se de digitar todos os números.",
+            toast: true,           
+            position: 'top-end',   
+            showConfirmButton: false, 
+            timer: 4000,           
+            timerProgressBar: true
+        });
         return;
     }
 
@@ -121,7 +151,7 @@ function controleExibicaoCamposCondominio() {
 function aplicarMascaras() {
     $('#cnpj').mask('00.000.000/0000-00');
     $('#cpf').mask('000.000.000-00');
-    $('#telefone').mask('(00) 0000-00009');
+    $('input[type="tel"]').mask('(00) 0000-00009');
     $('#cep').mask('00000-000');
 }
 
@@ -226,9 +256,9 @@ function configurarUFAndCidades() {
 
 // funcoes de validar todos os campos
 function validarParaEnviar(event) {
-    event.preventDefault(); 
-    const formularioValido = validarFormulario();
-    if (formularioValido)
+    //event.preventDefault(); 
+    //const formularioValido = validarFormulario();
+   // if (formularioValido)
         $('form').submit(); 
 }
 
@@ -429,7 +459,7 @@ $('#adicionar-contato').on('click', function() {
     $('#contatos-container').append(bloco);
     contatoAdicionalIndex++;
 
-    
+    aplicarMascaras()
     contatoAdicionalIndex > 0 ? $('#nao_existe_contatos_adicionais').hide() : $('#nao_existe_contatos_adicionais').show();
 });
 

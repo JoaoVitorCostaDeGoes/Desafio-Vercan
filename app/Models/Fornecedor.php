@@ -9,6 +9,13 @@ class Fornecedor extends Model
 {
     use HasFactory;
 
+    protected $table = 'fornecedores';
+
+    protected $fillable = [
+        'tipo_pessoa',
+        'observacao',
+    ];
+
     public function pessoaJuridica()
     {
         return $this->hasOne(FornecedorPj::class);
@@ -23,7 +30,7 @@ class Fornecedor extends Model
     {
         return $this->hasMany(Contato::class);
     }
-    
+
     public function endereco()
     {
         return $this->hasOne(Endereco::class);
