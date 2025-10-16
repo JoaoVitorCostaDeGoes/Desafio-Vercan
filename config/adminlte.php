@@ -318,12 +318,7 @@ return [
             'text' => 'Fornecedores',
             'url' => '/dashboard/fornecedores',
             'icon' => 'fas fa-fw fa-users',
-        ],
-        [
-            'text' => 'Sair',
-            'url' => '/logoff',
-            'icon' => 'fas fa-fw fa-power-off',
-        ],
+        ]
         
     ],
 
