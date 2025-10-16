@@ -57,7 +57,7 @@
                                 <div class="form-group col-md-3">
                                     <label for="indicadorIE">Indicador de Inscrição Estadual<span style="color:red">*</span></label>
                                     <select id="indicadorIE" class="form-control" required name="indicador_ie">
-                                        <option selected>Selecione</option>
+                                        <option value="Selecione" selected>Selecione</option>
                                         <option value="contribuinte">Contribuinte</option>
                                         <option value="contribuinte_isento">Contribuinte Isento</option>
                                         <option value="nao_contribuinte">Não Contribuinte</option>
@@ -81,7 +81,7 @@
                                 <div class="form-group col-md-3">
                                     <label for="recolhimento">Recolhimento<span style="color:red">*</span></label>
                                     <select id="recolhimento" class="form-control" required name="recolhimento">
-                                        <option>Selecione</option>
+                                        <option value="Selecione">Selecione</option>
                                         <option value="recolher" selected>A Recolher pelo Prestador</option>
                                         <option value="retido">Retido pelo Tomador</option>
                                     </select>
@@ -89,7 +89,7 @@
                                 <div class="form-group col-md-3">
                                     <label for="ativoPJ">Ativo<span style="color:red">*</span></label>
                                     <select id="ativoPJ" class="form-control" required name="ativo_pj">
-                                        <option >Selecione</option>
+                                        <option  value="Selecione">Selecione</option>
                                         <option value="1" selected>Sim</option>
                                         <option value="0">Não</option>
                                     </select>
@@ -120,7 +120,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="ativoPF">Ativo<span style="color:red">*</span></label>
                                     <select id="ativoPF" class="form-control" name="ativo_pf">
-                                        <option >Selecione</option>
+                                        <option value="Selecione">Selecione</option>
                                         <option value="1" selected>Sim</option>
                                         <option value="0">Não</option>
                                     </select>
@@ -153,7 +153,7 @@
                             <div class="form-group col-md-3">
                                 <label>Tipo<span style="color:red">*</span></label>
                                 <select id="tipo_telefone" class="form-control" name="tipo_telefone">
-                                    <option value selected>Selecione</option>
+                                    <option value="Selecione" selected>Selecione</option>
                                     <option value="residencial" selected>Residencial</option>
                                     <option value="comercial">Comercial</option> 
                                     <option value="celular">Celular</option> 
@@ -166,7 +166,7 @@
                             <div class="form-group col-md-3">
                                 <label>Tipo</label>
                                 <select id="tipo_email" class="form-control" name="tipo_email">
-                                    <option value selected>Selecione</option>
+                                    <option value="Selecione" selected>Selecione</option>
                                     <option value="pessoal" selected>Pessoal</option>
                                     <option value="comercial">Comercial</option> 
                                     <option value="outro">Outro</option> 
@@ -238,13 +238,13 @@
                             <div class="form-group col-md-3">
                                 <label for="uf">UF<span style="color: red">*</span></label>
                                 <select id="uf" class="form-control select2" name="endereco_uf">
-                                    <option value="">Selecione</option>
+                                    <option value="Selecione">Selecione</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="cidade">Cidade<span style="color: red">*</span></label>
                                 <select id="cidade" class="form-control select2" name="endereco_cidade" disabled>
-                                    <option value="">Selecione</option>
+                                    <option value="Selecione">Selecione</option>
                                 </select>
                             </div>
                         </div>
@@ -296,7 +296,7 @@
         </div>
 
         <div class="mt-3 mb-4">
-            <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Cadastrar</button>
+            <button type="submit" class="btn btn-success" onclick="validarParaEnviar(event)"><i class="fas fa-plus"></i> Cadastrar</button>
         </div>
     </form>
 @endsection
@@ -305,11 +305,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 @endsection
 
 @section('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/js/cadastrar_fornecedor.js') }}"></script>
 @endsection
 
