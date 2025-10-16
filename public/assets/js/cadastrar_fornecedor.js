@@ -196,7 +196,6 @@ function marcarErroEFoco(campo, collapseId, messagemErro) {
 
 function validarFormulario() {
     $('input, select').removeClass('is-invalid');
-    console.log('eee')
     let isValid = true; 
 
     const PjSelecionado = $('#pjRadio').is(':checked');
@@ -249,7 +248,6 @@ function validarFormulario() {
     const collapseContatoId = '#collapseContatoPrincipal';
     const email = $('#email').val();
     
-    console.log($('#tipo_telefone').val())
     if (!$('#telefone').val()) {
         marcarErroEFoco('#telefone', collapseContatoId, 'Telefone deve ser preenchido!');
         isValid = false;
@@ -362,4 +360,78 @@ function validarEmail(email) {
     if (!email) return true; 
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
+}
+
+
+// Funcoes de adicao de contatos adicionais
+let contatoAdicionalIndex = 0;
+
+$('#adicionar-contato').on('click', function() {
+    const bloco = criarBlocoContato(contatoAdicionalIndex);
+    $('#contatos-container').append(bloco);
+    contatoAdicionalIndex++;
+
+    
+    contatoAdicionalIndex > 0 ? $('#nao_existe_contatos_adicionais').hide() : $('#nao_existe_contatos_adicionais').show();
+});
+
+$(document).on('click', '.remover-contato', function() {
+    $(this).closest('.contato-item').remove();
+    contatoAdicionalIndex--;
+
+    contatoAdicionalIndex < 1 ? $('#nao_existe_contatos_adicionais').show() : $('#nao_existe_contatos_adicionais').hide();
+});
+
+
+function criarBlocoContato(index) {
+    return `
+    <div class="contato-item border rounded p-3 mb-3">
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>Nome</label>
+                <input type="text" class="form-control" name="contatos[${index}][nome_adicional]">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Empresa</label>
+                <input type="text" class="form-control" name="contatos[${index}][empresa_adicional]">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Cargo</label>
+                <input type="text" class="form-control" name="contatos[${index}][cargo_adicional]">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label>Telefone</label>
+                <input type="tel" class="form-control" name="contatos[${index}][telefone_adicional]">
+            </div>
+            <div class="form-group col-md-3">
+                <label>Tipo</label>
+                <select class="form-control" name="contatos[${index}][tipo_telefone_adicional]">
+                    <option value="">Selecione</option>
+                    <option value="residencial">Residencial</option>
+                    <option value="comercial">Comercial</option>
+                    <option value="celular">Celular</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label>E-mail</label>
+                <input type="email" class="form-control" name="contatos[${index}][email_adicional]">
+            </div>
+            <div class="form-group col-md-3">
+                <label>Tipo</label>
+                <select class="form-control" name="contatos[${index}][tipo_email_adicional]">
+                    <option value="">Selecione</option>
+                    <option value="pessoal">Pessoal</option>
+                    <option value="comercial">Comercial</option>
+                    <option value="outro">Outro</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="text-right">
+            <button type="button" class="btn btn-link text-danger remover-contato">REMOVER</button>
+        </div>
+    </div>`;
 }

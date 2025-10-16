@@ -177,18 +177,23 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="d-flex justify-content-between p-3 align-items-center card-toggle" data-toggle="collapse" data-target="#collapseContatosAdicionais" aria-expanded="false" aria-controls="collapseContatosAdicionais" style="cursor: pointer;">
+            <div class="card mt-3">
+                <div class="d-flex justify-content-between p-3 align-items-center card-toggle" data-toggle="collapse" data-target="#collapseContatosAdicionais" aria-expanded="true"
+                    aria-controls="collapseContatosAdicionais" style="cursor: pointer;">
                     <h3 class="card-title mb-0">Contatos Adicionais</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-tool">
+                        <i class="fas fa-minus"></i>
+                    </button>
                 </div>
 
                 <div id="collapseContatosAdicionais" class="collapse show">
-                    <div class="card-body">Conteúdo dos contatos adicionais...</div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-link pr-5" id="adicionar-contato">ADICIONAR</button>
+                    </div>
+                    
+                    <div class="card-body" id="contatos-container">
+                        <p id="nao_existe_contatos_adicionais" class="text-center"> Não Há Contatos Adicionais </p>
+                    </div>
                 </div>
             </div>
 
