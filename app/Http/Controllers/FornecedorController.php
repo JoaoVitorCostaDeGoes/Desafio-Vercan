@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFornecedorRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Cidade;
 use App\Models\Contato;
 use App\Models\Endereco;
 use App\Models\Estado;
@@ -16,6 +17,15 @@ use Illuminate\Support\Facades\DB;
 
 class FornecedorController extends Controller
 {
+
+    protected function carregarEstados()
+    {
+        return [
+            'estados' => Estado::orderBy('nome')->get(),
+        ];
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -82,17 +92,35 @@ class FornecedorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Fornecedor $fornecedor)
+    public function show($fornecedor_id)
     {
-        $fornecedor->load([
-            'pessoaJuridica', 
-            'pessoaFisica', 
-            'endereco.estado', 
-            'endereco.cidade', 
-            'contatos'
-        ]);
 
-        dd($fornecedor);
+        try{
+
+            $fornecedor = Fornecedor::find($fornecedor_id);
+            $fornecedor->load([
+                'pessoaJuridica', 
+                'pessoaFisica', 
+                'endereco.estado', 
+                'endereco.cidade', 
+                'contatos'
+            ]);
+    
+            $cidades = [];
+            if ($fornecedor->endereco && $fornecedor->endereco->estado_id) {
+                $cidades = Cidade::where('estado_id', $fornecedor->endereco->estado_id)->get();
+            }
+            
+            return view('fornecedores.show', array_merge($this->carregarEstados(), [
+                'fornecedor' => $fornecedor,
+                'cidades' => $cidades,
+            ]));
+
+        }catch(Exception $e){
+            return response()->json(['error' => 'Erro ao buscar fornecedor: ' . $e->getMessage()], 500);
+        }
+
+        
 
         
     }
@@ -166,6 +194,7 @@ class FornecedorController extends Controller
     protected function createContatos(Fornecedor $fornecedor, array $data): void
     {
         $contatos = [];
+        dd($data);
 
         // 4.1. Contato Principal (Telefone)
         $contatos[] = [
@@ -182,7 +211,7 @@ class FornecedorController extends Controller
                 'fornecedor_id' => $fornecedor->id,
                 'contato' => $data['email'],
                 'tipo_contato' => 'email',
-                'rotulo' => 'Principal',
+                'rotulo' =>  $data['tipo_email'],
                 'principal' => true,
             ];
         }
@@ -215,8 +244,9 @@ class FornecedorController extends Controller
             'logradouro' => $data['endereco_logradouro'],
             'numero' => $data['endereco_numero'],
             'bairro' => $data['endereco_bairro'],
-            'ponto_referencia' => $data['ponto_referencia'] ?? null,
+            'ponto_referencia' => $data['endereco_ponto_referencia'] ?? null,
             'estado_id' => $data['estado_id'],
+            'complemento'=> $data['endereco_complemento'] ?? null,
             'cidade_id' => $data['cidade_id'],
             'condominio_sn' => $data['condominio_sim_nao'],
             'condominio_endereco' => $data['condominio_endereco'] ?? null,
