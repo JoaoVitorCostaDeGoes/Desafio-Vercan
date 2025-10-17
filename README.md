@@ -45,7 +45,7 @@ Siga a ordem dos comandos para configurar e rodar o projeto localmente.
     * php artisan migrate (executa migrações do banco)
 * Execute php artisan db:seed para popular as tabelas com dados mockados
 * Execute npm install para instalar dependências frontend
-* Execute npm run build/ npm run dev para compilar os assets
+* Execute npm run build para compilar os assets
 * Inicie o servidor com php artisan serve
 
 ## Credenciais de teste:
