@@ -9,7 +9,7 @@ class CidadesTableSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('cidades')->truncate();
+        //DB::table('cidades')->truncate(); ou delete(); 
         $csvFile = database_path('seeders/data/municipios.csv'); 
         
         if (($handle = fopen($csvFile, 'r')) !== FALSE) {
