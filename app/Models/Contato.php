@@ -11,10 +11,13 @@ class Contato extends Model
 
     protected $fillable = [
         'fornecedor_id',
+        'nome',
+        'cargo',
+        'empresa',
         'contato',
         'tipo_contato',
         'rotulo',
-        'principal',
+        'principal'
     ];
 
     public function fornecedor() {

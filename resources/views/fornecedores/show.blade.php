@@ -166,7 +166,7 @@
             </div>
 
             @php
-                $contatosPrincipais = $fornecedor->contatos->where('principal', true);
+                $contatosPrincipais = $fornecedor->contatos;
 
                 $telefone = $contatosPrincipais->where('tipo_contato', 'telefone')->first();
                 $email = $contatosPrincipais->where('tipo_contato', 'email')->first();
@@ -230,33 +230,61 @@
                 <div class="card-body" id="contatos-container">
                     @php 
                         $contatosAdicionais = $fornecedor->contatos->where('principal', false);
+                        // Agrupa por nome/cargo/empresa — facilita exibir telefone e email do mesmo contato
+                        $contatosAgrupados = $contatosAdicionais->groupBy(function ($contato) {
+                            return ($contato->nome ?? '') . '|' . ($contato->empresa ?? '') . '|' . ($contato->cargo ?? '');
+                        });
                     @endphp
 
                     @if($contatosAdicionais->isEmpty())
-                        <p class="text-center"> Não Há Contatos Adicionais </p>
+                        <p class="text-center">Não há contatos adicionais</p>
                     @else
-                        @foreach($contatosAdicionais as $index => $contato)
-                            <div class="row border-bottom pb-3 mb-3" data-index="{{ $index }}">
-                                <div class="form-group col-md-3">
-                                    <label>Telefone</label>
-                                    <input type="text" class="form-control" value="{{ $contato->telefone }}" {{ $readOnlyAttr }}>
+                        @foreach($contatosAgrupados as $index => $grupo)
+                            @php
+                                $contatoTelefone = $grupo->firstWhere('tipo_contato', 'telefone');
+                                $contatoEmail = $grupo->firstWhere('tipo_contato', 'email');
+                                [$nome, $empresa, $cargo] = explode('|', $index);
+                            @endphp
+
+                            <div class="contato-item border rounded p-3 mb-3" data-index="{{ $loop->index }}">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label>Nome</label>
+                                        <input type="text" class="form-control" value="{{ $nome ?: '' }}" {{ $readOnlyAttr }}>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Empresa</label>
+                                        <input type="text" class="form-control" value="{{ $empresa ?: '' }}" {{ $readOnlyAttr }}>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Cargo</label>
+                                        <input type="text" class="form-control" value="{{ $cargo ?: '' }}" {{ $readOnlyAttr }}>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-3">
-                                    <label>Tipo</label>
-                                    <input type="text" class="form-control" value="{{ $contato->tipo_telefone }}" {{ $readOnlyAttr }}>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>Email</label>
-                                    <input type="text" class="form-control" value="{{ $contato->email }}" {{ $readOnlyAttr }}>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>Tipo</label>
-                                    <input type="text" class="form-control" value="{{ $contato->tipo_email }}" {{ $readOnlyAttr }}>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label>Telefone</label>
+                                        <input type="text" class="form-control" value="{{ $contatoTelefone->contato ?? '' }}" {{ $readOnlyAttr }}>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Tipo</label>
+                                        <input type="text" class="form-control" value="{{ $contatoTelefone->rotulo ?? '' }}" {{ $readOnlyAttr }}>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>E-mail</label>
+                                        <input type="text" class="form-control" value="{{ $contatoEmail->contato ?? '' }}" {{ $readOnlyAttr }}>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Tipo</label>
+                                        <input type="text" class="form-control" value="{{ $contatoEmail->rotulo ?? '' }}" {{ $readOnlyAttr }}>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
                     @endif
                 </div>
+
             </div>
         </div>
 

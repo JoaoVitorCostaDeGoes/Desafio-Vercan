@@ -30,8 +30,6 @@ class StoreFornecedorRequest extends FormRequest
             
             // Contatos Adicionais 
             'contatos_adicionais' => ['nullable', 'array'],
-            'contatos_adicionais.*.valor' => ['required', 'string'],
-            'contatos_adicionais.*.rotulo' => ['nullable', 'string', 'max:50'],
 
             // Endereço
             'endereco_cep'       => ['required', 'string', 'max:10'],
@@ -78,10 +76,6 @@ class StoreFornecedorRequest extends FormRequest
             'tipo_telefone.required' => 'O tipo de telefone é obrigatório.',
             'email.email' => 'O e-mail informado não é válido.',
             'email.max' => 'O e-mail não pode ter mais que 255 caracteres.',
-
-            'contatos_adicionais.array' => 'Os contatos adicionais devem estar em formato de lista.',
-            'contatos_adicionais.*.valor.required' => 'O valor do contato adicional é obrigatório.',
-            'contatos_adicionais.*.rotulo.max' => 'O rótulo do contato adicional deve ter no máximo 50 caracteres.',
 
             'endereco_cep.required' => 'O CEP é obrigatório.',
             'endereco_logradouro.required' => 'O logradouro é obrigatório.',

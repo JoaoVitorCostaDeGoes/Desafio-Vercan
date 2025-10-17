@@ -21,7 +21,7 @@ function buscarCEP() {
                 setTimeout(function() {
                     $('#cidade').val(data.ibge).attr('disabled', false).trigger('change');
                     $('#numero').focus();
-                }, 1000);
+                }, 2000);
             } else {
                 Swal.fire({
                     icon: 'warning', 

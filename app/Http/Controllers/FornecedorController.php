@@ -169,18 +169,37 @@ class FornecedorController extends Controller
      */
     public function destroy($fornecedor_id)
     {   
-        try{
+        try {
+            $fornecedor = Fornecedor::with(['pessoaJuridica', 'pessoaFisica', 'contatos', 'endereco'])
+                                    ->findOrFail($fornecedor_id);
 
-            $fornecedor = Fornecedor::findOrFail($fornecedor_id);
+            if ($fornecedor->pessoaJuridica) {
+                $fornecedor->pessoaJuridica->delete();
+            }
+
+            if ($fornecedor->pessoaFisica) {
+                $fornecedor->pessoaFisica->delete();
+            }
+
+            if ($fornecedor->endereco) {
+                $fornecedor->endereco->delete();
+            }
+
+            if ($fornecedor->contatos->isNotEmpty()) {
+                foreach ($fornecedor->contatos as $contato) {
+                    $contato->delete();
+                }
+            }
+
             $fornecedor->delete();
 
             return response()->json(['success' => 'Fornecedor excluído com sucesso.']);
 
-        }catch(Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Erro ao excluir fornecedor: ' . $e->getMessage()], 500);
         }
-        
-    }
+}
+
 
 
 
@@ -218,32 +237,33 @@ class FornecedorController extends Controller
     {
         $contatos = [];
 
-        // 4.1. Contato Principal (Telefone)
         $contatos[] = [
             'fornecedor_id' => $fornecedor->id,
+            'nome' => null,
+            'cargo' => null,
+            'empresa' => null,
             'contato' => $data['telefone'],
             'tipo_contato' => 'telefone',
             'rotulo' => $data['tipo_telefone'],
             'principal' => true,
         ];
         
-        // 4.2. Contato Principal (E-mail)
         if (!empty($data['email'])) {
             $contatos[] = [
                 'fornecedor_id' => $fornecedor->id,
+                'nome' => null,
+                'cargo' => null,
+                'empresa' => null,
                 'contato' => $data['email'],
                 'tipo_contato' => 'email',
-                'rotulo' =>  $data['tipo_email'],
+                'rotulo' => $data['tipo_email'],
                 'principal' => true,
             ];
         }
 
-        // 4.3. Contatos Adicionais
-        if (!empty($data['contatos'])) {
-            $contatos = [];
+        if (!empty($data['contatos_adicionais'])) {
         
-            foreach ($data['contatos'] as $contatoAdicional) {
-                // Telefone adicional
+            foreach ($data['contatos_adicionais'] as $contatoAdicional) {
                 if (!empty($contatoAdicional['telefone_adicional'])) {
                     $contatos[] = [
                         'fornecedor_id' => $fornecedor->id,
@@ -257,7 +277,6 @@ class FornecedorController extends Controller
                     ];
                 }
         
-                // E-mail adicional
                 if (!empty($contatoAdicional['email_adicional'])) {
                     $contatos[] = [
                         'fornecedor_id' => $fornecedor->id,
@@ -273,8 +292,6 @@ class FornecedorController extends Controller
             }
         }
         
-        
-        // Inserção em massa na tabela contatos
         Contato::insert($contatos); 
     }
 
