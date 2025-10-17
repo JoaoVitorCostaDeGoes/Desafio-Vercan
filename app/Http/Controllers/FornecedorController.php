@@ -25,10 +25,6 @@ class FornecedorController extends Controller
         ];
     }
 
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $fornecedores = Fornecedor::with(['pessoaFisica', 'pessoaJuridica'])->WhereNull('deleted_at')->get()->toArray();
@@ -37,9 +33,6 @@ class FornecedorController extends Controller
         return view('fornecedores.index', compact('fornecedores'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {   
 
@@ -47,9 +40,7 @@ class FornecedorController extends Controller
         return view('fornecedores.cadastrar', compact('estados'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StoreFornecedorRequest $request)
     {
         $dadosValidados = array_merge($request->all(), $request->validated());
@@ -89,9 +80,6 @@ class FornecedorController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($fornecedor_id)
     {
 
@@ -120,14 +108,8 @@ class FornecedorController extends Controller
             return response()->json(['error' => 'Erro ao buscar fornecedor: ' . $e->getMessage()], 500);
         }
 
-        
-
-        
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($fornecedor_id)
     {
         try{
@@ -156,9 +138,6 @@ class FornecedorController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(StoreFornecedorRequest $request, int $id_fornecedor) 
     {
         DB::beginTransaction();
@@ -166,38 +145,28 @@ class FornecedorController extends Controller
         $fornecedor = Fornecedor::find($id_fornecedor);
 
         try {
-            // 1. Atualizar Fornecedor principal (Tabela: fornecedores)
+            
             $fornecedor->update([
                 'tipo_pessoa' => $request->input('tipoPessoa'),
                 'observacao' => $request->input('observacao'),
             ]);
             
-            // 2. Atualizar Pessoa Jurídica OU Pessoa Física
             $this->atualizarDadosPessoa($request, $fornecedor);
-
-            // 3. Atualizar Dados de Endereço
             $this->atualizarEndereco($request, $fornecedor);
-
-            // 4. Atualizar Contatos Principais
             $this->atualizarContatosPrincipais($request, $fornecedor);
-            
-            // 5. Sincronizar Contatos Adicionais
             $this->sincronizarContatosAdicionais($request, $fornecedor);
 
             DB::commit();
 
             return redirect()->route('fornecedores.index')->with('success', 'Fornecedor atualizado com sucesso!');
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             dd($e);
             return back()->withInput()->withErrors(['message' => 'Erro interno ao salvar alterações.']);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($fornecedor_id)
     {   
         try {
@@ -226,15 +195,12 @@ class FornecedorController extends Controller
 
             return response()->json(['success' => 'Fornecedor excluído com sucesso.']);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Erro ao excluir fornecedor: ' . $e->getMessage()], 500);
         }
 }
 
-
-
-
-    // funcoes auxiliares
+    // funcoes auxiliares para criacao dos fornecedores
     protected function createPessoaJuridica(Fornecedor $fornecedor, array $data): void
     {
         FornecedorPj::create([
@@ -345,17 +311,14 @@ class FornecedorController extends Controller
     }
 
 
-    //funcoes update
+    //funcoes auxiliares para realizar o update/atulaizacao dos dados
     private function atualizarDadosPessoa($request, Fornecedor $fornecedor)
     {
-        $fornecedorIdKey = 'fornecedor_id'; // Chave estrangeira para PJ/PF
-        
+        $fornecedorIdKey = 'fornecedor_id'; 
         
         if ($request->input('tipoPessoa') === 'PJ') {
-
-            
             FornecedorPj::updateOrCreate(
-                [$fornecedorIdKey => $fornecedor->id], // Condição para busca (FornecedorPj já existe para este Fornecedor)
+                [$fornecedorIdKey => $fornecedor->id],
                 [
                     'cnpj' => $request->input('cnpj'),
                     'razao_social' => $request->input('razao_social'),
@@ -368,49 +331,42 @@ class FornecedorController extends Controller
                 ]
             );
 
-            // 2.2. Deleta Pessoa Física (se existir)
             FornecedorPf::where($fornecedorIdKey, $fornecedor->id)->delete();
-
         } elseif ($request->input('tipoPessoa') === 'PF') {
-            // 2.3. Atualiza ou Cria Pessoa Física
             FornecedorPf::updateOrCreate(
-                [$fornecedorIdKey => $fornecedor->id], // Condição para busca
+                [$fornecedorIdKey => $fornecedor->id], 
                 [
                     'cpf' => $request->input('cpf'),
                     'nome' => $request->input('nome_pf'),
                     'apelido' => $request->input('apelido'),
                     'rg' => $request->input('rg'),
-                    'ativo' => $request->input('ativo_pf', 0), // Use 0 (false) como padrão se não vier
+                    'ativo' => $request->input('ativo_pf', 0),
                 ]
             );
 
-            // 2.4. Deleta Pessoa Jurídica (se existir)
             FornecedorPj::where($fornecedorIdKey, $fornecedor->id)->delete();
         }
     }
 
-    /**
-     * Atualiza o endereço do fornecedor.
-     */
     private function atualizarEndereco($request, Fornecedor $fornecedor)
     {
-        // Assumindo que a FK na tabela 'enderecos' é 'fornecedor_id'
+        
         $fornecedorIdKey = 'fornecedor_id';
         
         Endereco::updateOrCreate(
-            [$fornecedorIdKey => $fornecedor->id], // Busca o endereço existente
+            [$fornecedorIdKey => $fornecedor->id], 
             [
                 'cep' => $request->input('endereco_cep'),
                 'logradouro' => $request->input('endereco_logradouro'),
                 'numero' => $request->input('endereco_numero'),
                 'bairro' => $request->input('endereco_bairro'),
-                'estado_id' => $request->input('estado_id'), // Vem do prepareForValidation
-                'cidade_id' => $request->input('cidade_id'), // Vem do prepareForValidation
+                'estado_id' => $request->input('estado_id'),
+                'cidade_id' => $request->input('cidade_id'),
                 'condominio_sn' => $request->input('condominio_sim_nao'),
                 'condominio_endereco' => $request->input('condominio_endereco'),
                 'condominio_numero' => $request->input('condominio_numero'),
-                'complemento' => $request->input('endereco_complemento'), // Se existir no form
-                'ponto_referencia' => $request->input('endereco_ponto_referencia'), // Se existir no form
+                'complemento' => $request->input('endereco_complemento'), 
+                'ponto_referencia' => $request->input('endereco_ponto_referencia'),
             ]
         );
     }
@@ -420,7 +376,7 @@ class FornecedorController extends Controller
      */
     private function atualizarContatosPrincipais($request, Fornecedor $fornecedor)
     {
-        // 4.1. Telefone Principal
+       
         Contato::updateOrCreate(
             ['fornecedor_id' => $fornecedor->id, 'tipo_contato' => 'telefone', 'principal' => true],
             [
@@ -430,18 +386,16 @@ class FornecedorController extends Controller
             ]
         );
         
-        // 4.2. Email Principal (Email é opcional, se estiver vazio, deletamos o registro antigo)
         if ($request->filled('email')) {
              Contato::updateOrCreate(
                 ['fornecedor_id' => $fornecedor->id, 'tipo_contato' => 'email', 'principal' => true],
                 [
                     'contato' => $request->input('email'),
-                    'rotulo' => 'principal', // Adote um rótulo padrão para e-mail principal se não houver campo
+                    'rotulo' => 'principal', 
                     'principal' => true,
                 ]
             );
         } else {
-            // Deleta o registro de email principal se o campo veio vazio no formulário
             $fornecedor->contatos()
                 ->where('principal', true)
                 ->where('tipo_contato', 'email')
@@ -449,17 +403,12 @@ class FornecedorController extends Controller
         }
     }
 
-    /**
-     * Sincroniza os contatos adicionais. (Deleta todos os antigos e recria)
-     */
     private function sincronizarContatosAdicionais($request, Fornecedor $fornecedor)
     {
         $novosContatos = $request->input('contatos_adicionais') ?? [];
 
-        // 5.1. Deletar todos os contatos não-principais (adicionais) existentes
         $fornecedor->contatos()->where('principal', false)->delete();
         
-        // 5.2. Criar os novos contatos a partir do array
         foreach ($novosContatos as $contatoData) {
             
             // Garante que pelo menos um campo de contato está preenchido
@@ -467,12 +416,10 @@ class FornecedorController extends Controller
                 continue;
             }
 
-            // Campos que são comuns aos grupos de Telefone e Email
             $nome = $contatoData['nome_adicional'] ?? null;
             $cargo = $contatoData['cargo_adicional'] ?? null;
-            $empresa = $contatoData['empresa_adicional'] ?? null; // Se existir no seu form/JS
+            $empresa = $contatoData['empresa_adicional'] ?? null; 
 
-            // Cria o registro de Telefone Adicional (se preenchido)
             if (!empty($contatoData['telefone_adicional'])) {
                 $fornecedor->contatos()->create([
                     'tipo_contato' => 'telefone',
@@ -485,7 +432,6 @@ class FornecedorController extends Controller
                 ]);
             }
 
-            // Cria o registro de Email Adicional (se preenchido)
             if (!empty($contatoData['email_adicional'])) {
                 $fornecedor->contatos()->create([
                     'tipo_contato' => 'email',

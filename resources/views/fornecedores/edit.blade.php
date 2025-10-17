@@ -232,7 +232,6 @@
 
             </div>
 
-            {{-- CONTATOS ADICIONAIS --}}
             <div class="card mt-3">
                 <div class="d-flex justify-content-between p-3 align-items-center card-toggle"
                     data-toggle="collapse" data-target="#collapseContatosAdicionais"
@@ -257,7 +256,6 @@
                                 return ($contato->nome ?? '') . '|' . ($contato->empresa ?? '') . '|' . ($contato->cargo ?? '');
                             });
 
-                            // Caso tenha old() (erro de validação), ele prevalece
                             $contatosToDisplay = old('contatos_adicionais') ?? $contatosAgrupados;
                         @endphp
 
@@ -267,7 +265,6 @@
                             @foreach($contatosToDisplay as $index => $grupo)
                                 @php
                                     if (is_array($grupo)) {
-                                        // Quando vem de old(), já é um array
                                         $nome = $grupo['nome_adicional'] ?? '';
                                         $empresa = $grupo['empresa_adicional'] ?? '';
                                         $cargo = $grupo['cargo_adicional'] ?? '';
@@ -276,7 +273,6 @@
                                         $email = $grupo['email_adicional'] ?? '';
                                         $tipoEmail = $grupo['tipo_email_adicional'] ?? '';
                                     } else {
-                                        // Quando vem do model
                                         [$nome, $empresa, $cargo] = explode('|', $index);
                                         $contatoTelefone = $grupo->firstWhere('tipo_contato', 'telefone');
                                         $contatoEmail = $grupo->firstWhere('tipo_contato', 'email');
@@ -342,8 +338,6 @@
                 </div>
             </div>
 
-
-            {{-- DADOS DE ENDEREÇO --}}
             <div class="card">
                 <div class="d-flex justify-content-between p-3 align-items-center card-toggle" 
                     data-toggle="collapse" data-target="#collapseEndereco" 
@@ -450,7 +444,6 @@
                 </div>
             </div>
 
-            {{-- OBSERVAÇÕES --}}
             <div class="card">
                 <div class="d-flex justify-content-between p-3 align-items-center card-toggle" data-toggle="collapse" data-target="#collapseObservacao" aria-expanded="false" aria-controls="collapseObservacao" style="cursor: pointer;">
                     <h3 class="card-title mb-0">Observações</h3>
@@ -463,7 +456,6 @@
 
                 <div id="collapseObservacao" class="collapse show">
                     <div class="card-body">
-                        {{-- Preenche o textarea com old() ou valor atual --}}
                         <textarea id="observacaoEditor" name="observacao" class="form-control" rows="8">{{ old('observacao', $fornecedor->observacao ?? '') }}</textarea>
                     </div>
                 </div>
