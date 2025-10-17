@@ -7,6 +7,13 @@
 @endsection
 
 @section('content')
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="mb-3 text-right">
         <a href="{{ route('fornecedores.create') }}" class="btn btn-success px-3"><i class="mx-1 fas fa-plus"></i>Cadastrar</a>
     </div>

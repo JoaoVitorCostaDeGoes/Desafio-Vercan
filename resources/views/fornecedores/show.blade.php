@@ -9,6 +9,7 @@
 @section('content')
     
     <div class="accordion" id="cadastroFornecedorAccordion">
+
         
         <div class="card">
             <div class="d-flex justify-content-between p-3 align-items-center card-toggle" 
@@ -96,7 +97,8 @@
                             <div class="form-group col-md-3">
                                 <label for="recolhimento">Recolhimento<span style="color:red">*</span></label>
                                 <select id="recolhimento" class="form-control" name="recolhimento" {{ $disabledAttr }}>
-                                    @php $recolhimento = $fornecedor->recolhimento ?? ''; @endphp
+                                    @php $recolhimento = $pjData->recolhimento ?? ''; @endphp
+                                    
                                     <option value="Selecione" @selected($recolhimento == '')>Selecione</option>
                                     <option value="recolher" @selected($recolhimento == 'recolher')>A Recolher pelo Prestador</option>
                                     <option value="retido" @selected($recolhimento == 'retido')>Retido pelo Tomador</option>
@@ -105,7 +107,7 @@
                             <div class="form-group col-md-3">
                                 <label for="ativoPJ">Ativo<span style="color:red">*</span></label>
                                 <select id="ativoPJ" class="form-control" name="ativo_pj" {{ $disabledAttr }}>
-                                    @php $ativo = $fornecedor->ativo ?? 1; @endphp 
+                                    @php $ativo = $pjData->ativo ?? 1; @endphp 
                                     <option value="Selecione" @selected($ativo === null)>Selecione</option>
                                     <option value="1" @selected($ativo == 1)>Sim</option>
                                     <option value="0" @selected($ativo == 0)>Não</option>
@@ -141,7 +143,7 @@
                             <div class="form-group col-md-4">
                                 <label for="ativoPF">Ativo<span style="color:red">*</span></label>
                                 <select id="ativoPF" class="form-control" name="ativo_pf" {{ $disabledAttr }}>
-                                    @php $ativo = $fornecedor->ativo ?? 1; @endphp {{-- Assume 1 se for PF --}}
+                                    @php $ativo = $pfData->ativo ?? 1; @endphp {{-- Assume 1 se for PF --}}
                                     <option value="Selecione" @selected($ativo === null)>Selecione</option>
                                     <option value="1" @selected($ativo == 1)>Sim</option>
                                     <option value="0" @selected($ativo == 0)>Não</option>
@@ -166,7 +168,7 @@
             </div>
 
             @php
-                $contatosPrincipais = $fornecedor->contatos;
+                $contatosPrincipais = $fornecedor->contatos->where('principal', true);
 
                 $telefone = $contatosPrincipais->where('tipo_contato', 'telefone')->first();
                 $email = $contatosPrincipais->where('tipo_contato', 'email')->first();
@@ -355,7 +357,7 @@
                                     $cidadeAtual = $enderecoData->cidade ?? null;
                                 @endphp
                                 @if($cidadeAtual)
-                                    <option value="{{ $cidadeAtual->id }}" selected>{{ $cidadeAtual->nome }}</option>
+                                    <option value="{{ $cidadeAtual->codigo_ibge }}" selected>{{ $cidadeAtual->nome }}</option>
                                 @else
                                     <option value="Selecione" selected>Selecione</option>
                                 @endif

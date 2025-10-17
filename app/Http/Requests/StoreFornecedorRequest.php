@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 
 use App\Models\Estado;
 use App\Models\Cidade;
+use App\Models\Fornecedor;
 
 class StoreFornecedorRequest extends FormRequest
 {
@@ -15,8 +16,20 @@ class StoreFornecedorRequest extends FormRequest
         return true;
     }
 
+    protected function getFornecedorId()
+    {   
+        $fornecedor = $this->route('fornecedore');
+
+        if ($fornecedor && $fornecedor instanceof Fornecedor) {
+            return $fornecedor->id;
+        }
+
+        return $fornecedor; 
+    }
+
     public function rules(): array
     {
+        $fornecedorId = $this->getFornecedorId(); 
         $tipoPessoa = $this->input('tipoPessoa'); 
 
         $rules = [
@@ -46,17 +59,31 @@ class StoreFornecedorRequest extends FormRequest
         ];
 
         if ($tipoPessoa === 'PJ') {
-            $rules['cnpj']                 = ['required', 'string', 'max:18', 'unique:fornecedor_pj,cnpj'];
+            //$rules['cnpj']                 = ['required', 'string', 'max:18', 'unique:fornecedor_pj,cnpj'];
+
+            $rules['cnpj'] = [
+                'required', 
+                'string', 
+                'max:18', 
+                Rule::unique('fornecedor_pj', 'cnpj')->ignore($fornecedorId, 'fornecedor_id') 
+            ];
             $rules['razao_social']         = ['required', 'string', 'max:255'];
             $rules['nome_fantasia']        = ['required', 'string', 'max:255'];
             $rules['indicador_ie']         = ['required', Rule::in(['contribuinte', 'isento', 'nao_contribuinte'])];
             $rules['inscricao_estadual']   = ['nullable', 'string', 'max:50'];
             $rules['recolhimento']         = ['required', Rule::in(['recolher', 'retido'])];
             $rules['ativo_pj']             = ['boolean'];
+            
         }
 
         if ($tipoPessoa === 'PF') {
-            $rules['cpf']    = ['required', 'string', 'max:14', 'unique:fornecedor_pf,cpf'];
+            //$rules['cpf']    = ['required', 'string', 'max:14', 'unique:fornecedor_pf,cpf'];
+            $rules['cpf'] = [
+                'required', 
+                'string', 
+                'max:14', 
+                Rule::unique('fornecedor_pf', 'cpf')->ignore($fornecedorId, 'fornecedor_id')
+            ];
             $rules['nome_pf'] = ['required', 'string', 'max:255'];
             $rules['rg']     = ['required', 'string', 'max:50'];
             $rules['ativo_pf'] = ['boolean'];
@@ -111,6 +138,7 @@ class StoreFornecedorRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+
         
         if ($this->filled('endereco_uf')) {
             $estado = Estado::where('uf', $this->input('endereco_uf'))->first();

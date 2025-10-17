@@ -20,7 +20,7 @@
 
     <form action="{{ route('fornecedores.update', $fornecedor->id) }}" method="POST">
         @csrf
-        @method('PUT')
+        @method('PUT') 
         
         <div class="accordion" id="cadastroFornecedorAccordion">
             
@@ -40,7 +40,7 @@
                     <div class="card-body">
                         
                         @php
-                        
+                            
                             $pjData = $fornecedor->pessoaJuridica;
                             $pfData = $fornecedor->pessoaFisica;
                             $enderecoData = $fornecedor->endereco;
@@ -111,7 +111,7 @@
                                 <div class="form-group col-md-3">
                                     <label for="recolhimento">Recolhimento<span style="color:red">*</span></label>
                                     <select id="recolhimento" class="form-control" required name="recolhimento">
-                                        @php $recolhimento = old('recolhimento', $fornecedor->recolhimento ?? ''); @endphp
+                                        @php $recolhimento = old('recolhimento', $pjData->recolhimento ?? ''); @endphp
                                         <option value="Selecione" @selected($recolhimento == 'Selecione' || $recolhimento == '')>Selecione</option>
                                         <option value="recolher" @selected($recolhimento == 'recolher')>A Recolher pelo Prestador</option>
                                         <option value="retido" @selected($recolhimento == 'retido')>Retido pelo Tomador</option>
@@ -120,7 +120,7 @@
                                 <div class="form-group col-md-3">
                                     <label for="ativoPJ">Ativo<span style="color:red">*</span></label>
                                     <select id="ativoPJ" class="form-control" required name="ativo_pj">
-                                        @php $ativo = old('ativo_pj', $fornecedor->ativo ?? 1); @endphp 
+                                        @php $ativo = old('ativo_pj', $pjData->ativo ?? 1); @endphp 
                                         <option value="Selecione" @selected($ativo === null)>Selecione</option>
                                         <option value="1" @selected($ativo == 1)>Sim</option>
                                         <option value="0" @selected($ativo == 0)>Não</option>
@@ -156,7 +156,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="ativoPF">Ativo<span style="color:red">*</span></label>
                                     <select id="ativoPF" class="form-control" name="ativo_pf">
-                                        @php $ativo = old('ativo_pf', $fornecedor->ativo ?? 1); @endphp
+                                        @php $ativo = old('ativo_pf', $pfData->ativo ?? 1); @endphp
                                         <option value="Selecione" @selected($ativo === null)>Selecione</option>
                                         <option value="1" @selected($ativo == 1)>Sim</option>
                                         <option value="0" @selected($ativo == 0)>Não</option>
@@ -169,6 +169,7 @@
                 </div>
             </div>
 
+            
             <div class="card">
                 <div class="d-flex justify-content-between p-3 align-items-center card-toggle" data-toggle="collapse" data-target="#collapseContatoPrincipal" aria-expanded="false" aria-controls="collapseContatoPrincipal" style="cursor: pointer;">
                     <h3 class="card-title mb-0">Contato Principal</h3>
@@ -181,39 +182,39 @@
 
                 @php
                     $contatosPrincipais = $fornecedor->contatos->where('principal', true);
+                    
 
                     $telefone = $contatosPrincipais->where('tipo_contato', 'telefone')->first();
                     $email = $contatosPrincipais->where('tipo_contato', 'email')->first();
+                    
 
-                    $tel = $telefone->contato ?? '';
-                    $tipoTel = $telefone->tipo_contato ?? '';
-                    $rotuloTel = $telefone->rotulo ?? '';
-
-                    $emailContato = $email->contato ?? '';
-                    $tipoEmail = $email->tipo_contato ?? '';
-                    $rotuloEmail = $email->rotulo ?? '';
+                    $tel = old('telefone', $telefone->contato ?? '');
+                    $rotuloTel = old('tipo_telefone', $telefone->rotulo ?? '');
+                    $emailContato = old('email', $email->contato ?? '');
+                    $rotuloEmail = old('tipo_email', $email->rotulo ?? '');
                 @endphp
-                
+
                 <div id="collapseContatoPrincipal" class="collapse show">
                     <div class="card-body">
                         <div class="row">
                             <div class="form-group col-md-3">
                                 <label for="telefone">Telefone<span style="color:red">*</span></label>
-                                <input type="tel" class="form-control" id="telefone" required name="telefone" 
-                                    value="{{ $tel }}" placeholder="">
+                                <input type="tel" class="form-control" id="telefone" name="telefone"
+                                    value="{{ $tel }}" required placeholder="">
                             </div>
                             <div class="form-group col-md-3">
                                 <label>Tipo<span style="color:red">*</span></label>
-                                <select id="tipo_telefone" class="form-control" name="tipo_telefone">
+                                <select id="tipo_telefone" class="form-control" name="tipo_telefone" required>
                                     <option value="Selecione" @selected($rotuloTel == 'Selecione' || $rotuloTel == '')>Selecione</option>
                                     <option value="residencial" @selected($rotuloTel == 'residencial')>Residencial</option>
-                                    <option value="comercial" @selected($rotuloTel == 'comercial')>Comercial</option> 
-                                    <option value="celular" @selected($rotuloTel == 'celular')>Celular</option> 
+                                    <option value="comercial" @selected($rotuloTel == 'comercial')>Comercial</option>
+                                    <option value="celular" @selected($rotuloTel == 'celular')>Celular</option>
                                 </select>
                             </div>
+
                             <div class="form-group col-md-3">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" required name="email" 
+                                <input type="email" class="form-control" id="email" name="email"
                                     value="{{ $emailContato }}" placeholder="">
                             </div>
                             <div class="form-group col-md-3">
@@ -221,18 +222,21 @@
                                 <select id="tipo_email" class="form-control" name="tipo_email">
                                     <option value="Selecione" @selected($rotuloEmail == 'Selecione' || $rotuloEmail == '')>Selecione</option>
                                     <option value="pessoal" @selected($rotuloEmail == 'pessoal')>Pessoal</option>
-                                    <option value="comercial" @selected($rotuloEmail == 'comercial')>Comercial</option> 
-                                    <option value="outro" @selected($rotuloEmail == 'outro')>Outro</option> 
+                                    <option value="comercial" @selected($rotuloEmail == 'comercial')>Comercial</option>
+                                    <option value="outro" @selected($rotuloEmail == 'outro')>Outro</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
+            {{-- CONTATOS ADICIONAIS --}}
             <div class="card mt-3">
-                <div class="d-flex justify-content-between p-3 align-items-center card-toggle" data-toggle="collapse" data-target="#collapseContatosAdicionais" aria-expanded="true"
-                    aria-controls="collapseContatosAdicionais" style="cursor: pointer;">
+                <div class="d-flex justify-content-between p-3 align-items-center card-toggle"
+                    data-toggle="collapse" data-target="#collapseContatosAdicionais"
+                    aria-expanded="true" aria-controls="collapseContatosAdicionais" style="cursor: pointer;">
                     <h3 class="card-title mb-0">Contatos Adicionais</h3>
                     <button type="button" class="btn btn-tool">
                         <i class="fas fa-minus"></i>
@@ -243,57 +247,103 @@
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-link pr-5" id="adicionar-contato">ADICIONAR</button>
                     </div>
-                    
+
                     <div class="card-body" id="contatos-container">
                         @php 
                             $contatosAdicionais = $fornecedor->contatos->where('principal', false);
+
+                            // Agrupa por nome, empresa e cargo para juntar telefone + email do mesmo contato
+                            $contatosAgrupados = $contatosAdicionais->groupBy(function ($contato) {
+                                return ($contato->nome ?? '') . '|' . ($contato->empresa ?? '') . '|' . ($contato->cargo ?? '');
+                            });
+
+                            // Caso tenha old() (erro de validação), ele prevalece
+                            $contatosToDisplay = old('contatos_adicionais') ?? $contatosAgrupados;
                         @endphp
 
-                        @if($contatosAdicionais->isEmpty() && !old('contatos'))
-                            <p id="nao_existe_contatos_adicionais" class="text-center"> Não Há Contatos Adicionais </p>
+                        @if(($contatosAgrupados->isEmpty()) && !old('contatos_adicionais'))
+                            <p id="nao_existe_contatos_adicionais" class="text-center">Não há contatos adicionais</p>
                         @else
-                            
-                            @php 
-                                $contatosToDisplay = old('contatos') ?? $contatosAdicionais;
-                            @endphp
-
-                            @foreach($contatosToDisplay as $index => $contato)
+                            @foreach($contatosToDisplay as $index => $grupo)
                                 @php
-                                    
-                                    $contatoTel = is_array($contato) ? $contato['telefone'] : $contato->telefone;
-                                    $contatoTipoTel = is_array($contato) ? $contato['tipo_telefone'] : $contato->tipo_telefone;
-                                    $contatoEmail = is_array($contato) ? $contato['email'] : $contato->email;
-                                    $contatoTipoEmail = is_array($contato) ? $contato['tipo_email'] : $contato->tipo_email;
+                                    if (is_array($grupo)) {
+                                        // Quando vem de old(), já é um array
+                                        $nome = $grupo['nome_adicional'] ?? '';
+                                        $empresa = $grupo['empresa_adicional'] ?? '';
+                                        $cargo = $grupo['cargo_adicional'] ?? '';
+                                        $telefone = $grupo['telefone_adicional'] ?? '';
+                                        $tipoTelefone = $grupo['tipo_telefone_adicional'] ?? '';
+                                        $email = $grupo['email_adicional'] ?? '';
+                                        $tipoEmail = $grupo['tipo_email_adicional'] ?? '';
+                                    } else {
+                                        // Quando vem do model
+                                        [$nome, $empresa, $cargo] = explode('|', $index);
+                                        $contatoTelefone = $grupo->firstWhere('tipo_contato', 'telefone');
+                                        $contatoEmail = $grupo->firstWhere('tipo_contato', 'email');
+                                        $telefone = $contatoTelefone->contato ?? '';
+                                        $tipoTelefone = $contatoTelefone->rotulo ?? '';
+                                        $email = $contatoEmail->contato ?? '';
+                                        $tipoEmail = $contatoEmail->rotulo ?? '';
+                                    }
                                 @endphp
-                                <div class="row border-bottom pb-3 mb-3 contato-adicional-item" data-index="{{ $index }}">
-                                    <input type="hidden" name="contatos[{{ $index }}][telefone]" value="{{ $contatoTel }}">
-                                    <input type="hidden" name="contatos[{{ $index }}][tipo_telefone]" value="{{ $contatoTipoTel }}">
-                                    <input type="hidden" name="contatos[{{ $index }}][email]" value="{{ $contatoEmail }}">
-                                    <input type="hidden" name="contatos[{{ $index }}][tipo_email]" value="{{ $contatoTipoEmail }}">
 
-                                    <div class="form-group col-md-3">
-                                        <label>Telefone</label>
-                                        <input type="text" class="form-control" value="{{ $contatoTel }}" readonly>
+                                <div class="contato-item border rounded p-3 mb-3" data-index="{{ $loop->index }}">
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            <label>Nome</label>
+                                            <input type="text" class="form-control" name="contatos_adicionais[{{ $loop->index }}][nome_adicional]" value="{{ $nome }}">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>Empresa</label>
+                                            <input type="text" class="form-control" name="contatos_adicionais[{{ $loop->index }}][empresa_adicional]" value="{{ $empresa }}">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>Cargo</label>
+                                            <input type="text" class="form-control" name="contatos_adicionais[{{ $loop->index }}][cargo_adicional]" value="{{ $cargo }}">
+                                        </div>
                                     </div>
-                                    <div class="form-group col-md-3">
-                                        <label>Tipo</label>
-                                        <input type="text" class="form-control" value="{{ $contatoTipoTel }}" readonly>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label>Telefone</label>
+                                            <input type="tel" class="form-control" name="contatos_adicionais[{{ $loop->index }}][telefone_adicional]" value="{{ $telefone }}">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label>Tipo</label>
+                                            <select class="form-control" name="contatos_adicionais[{{ $loop->index }}][tipo_telefone_adicional]">
+                                                <option value="">Selecione</option>
+                                                <option value="residencial" @selected($tipoTelefone == 'residencial')>Residencial</option>
+                                                <option value="comercial" @selected($tipoTelefone == 'comercial')>Comercial</option>
+                                                <option value="celular" @selected($tipoTelefone == 'celular')>Celular</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label>E-mail</label>
+                                            <input type="email" class="form-control" name="contatos_adicionais[{{ $loop->index }}][email_adicional]" value="{{ $email }}">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label>Tipo</label>
+                                            <select class="form-control" name="contatos_adicionais[{{ $loop->index }}][tipo_email_adicional]">
+                                                <option value="">Selecione</option>
+                                                <option value="pessoal" @selected($tipoEmail == 'pessoal')>Pessoal</option>
+                                                <option value="comercial" @selected($tipoEmail == 'comercial')>Comercial</option>
+                                                <option value="outro" @selected($tipoEmail == 'outro')>Outro</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="form-group col-md-3">
-                                        <label>Email</label>
-                                        <input type="text" class="form-control" value="{{ $contatoEmail }}" readonly>
-                                    </div>
-                                    <div class="form-group col-md-3 d-flex align-items-center justify-content-end">
-                                        <button type="button" class="btn btn-danger btn-sm remover-contato" data-index="{{ $index }}">Remover</button>
+
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-link text-danger remover-contato">REMOVER</button>
                                     </div>
                                 </div>
                             @endforeach
-                            <p id="nao_existe_contatos_adicionais" class="text-center" style="display: none;"> Não Há Contatos Adicionais </p>
                         @endif
                     </div>
                 </div>
             </div>
 
+
+            {{-- DADOS DE ENDEREÇO --}}
             <div class="card">
                 <div class="d-flex justify-content-between p-3 align-items-center card-toggle" 
                     data-toggle="collapse" data-target="#collapseEndereco" 
@@ -355,19 +405,16 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="cidade">Cidade<span style="color: red">*</span></label>
-                                {{-- A lista de cidades será carregada via JS ou virá pré-preenchida pelo Controller --}}
                                 <select id="cidade" class="form-control select2" name="endereco_cidade" required @disabled(!old('endereco_uf', $enderecoData->estado->uf ?? ''))>
                                     @php 
-                                        $cidadeIdSelected = old('endereco_cidade', $enderecoData->cidade_id ?? '');
+                                        $cidadeIdSelected = old('endereco_cidade', $enderecoData->cidade->codigo_ibge ?? '');
                                     @endphp
                                     <option value="">Selecione</option>
-                                    
-                                    {{-- Se o Controller passou as cidades para a view (Método Edit) --}}
+                            
                                     @if(isset($cidades) && !empty($cidades))
                                         @foreach($cidades as $cidade)
-                                            <option value="{{ $cidade->id }}" @selected($cidadeIdSelected == $cidade->id)>{{ $cidade->nome }}</option>
+                                            <option value="{{ $cidade->codigo_ibge }}" @selected($cidadeIdSelected == $cidade->codigo_ibge)>{{ $cidade->nome }}</option>
                                         @endforeach
-                                    {{-- Se houver old() (erro de validação), apenas carrega a cidade selecionada para não dar erro --}}
                                     @elseif($cidadeIdSelected)
                                         <option value="{{ $cidadeIdSelected }}" selected>ID {{ $cidadeIdSelected }} (Aguardando JS)</option>
                                     @endif
@@ -403,6 +450,7 @@
                 </div>
             </div>
 
+            {{-- OBSERVAÇÕES --}}
             <div class="card">
                 <div class="d-flex justify-content-between p-3 align-items-center card-toggle" data-toggle="collapse" data-target="#collapseObservacao" aria-expanded="false" aria-controls="collapseObservacao" style="cursor: pointer;">
                     <h3 class="card-title mb-0">Observações</h3>
@@ -415,6 +463,7 @@
 
                 <div id="collapseObservacao" class="collapse show">
                     <div class="card-body">
+                        {{-- Preenche o textarea com old() ou valor atual --}}
                         <textarea id="observacaoEditor" name="observacao" class="form-control" rows="8">{{ old('observacao', $fornecedor->observacao ?? '') }}</textarea>
                     </div>
                 </div>
@@ -439,7 +488,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- ASSUMA QUE SEU JS EXISTENTE TAMBÉM TRATA DE PREENCHER OS CAMPOS VIA AJAX (CEP, CIDADES) --}}
     <script src="{{ asset('assets/js/cadastrar_fornecedor.js') }}"></script> 
 @endsection
 
