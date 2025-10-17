@@ -52,7 +52,7 @@ class FornecedorController extends Controller
      */
     public function store(StoreFornecedorRequest $request)
     {
-        $dadosValidados = $request->validated();
+        $dadosValidados = array_merge($request->all(), $request->validated());
 
         DB::beginTransaction();
 
@@ -128,9 +128,32 @@ class FornecedorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($fornecedor_id)
     {
-        //
+        try{
+
+            $fornecedor = Fornecedor::find($fornecedor_id);
+            $fornecedor->load([
+                'pessoaJuridica', 
+                'pessoaFisica', 
+                'endereco.estado', 
+                'endereco.cidade', 
+                'contatos'
+            ]);
+    
+            $cidades = [];
+            if ($fornecedor->endereco && $fornecedor->endereco->estado_id) {
+                $cidades = Cidade::where('estado_id', $fornecedor->endereco->estado_id)->get();
+            }
+            
+            return view('fornecedores.edit', array_merge($this->carregarEstados(), [
+                'fornecedor' => $fornecedor,
+                'cidades' => $cidades,
+            ]));
+
+        }catch(Exception $e){
+            return response()->json(['error' => 'Erro ao buscar fornecedor: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -194,7 +217,6 @@ class FornecedorController extends Controller
     protected function createContatos(Fornecedor $fornecedor, array $data): void
     {
         $contatos = [];
-        dd($data);
 
         // 4.1. Contato Principal (Telefone)
         $contatos[] = [
@@ -217,20 +239,40 @@ class FornecedorController extends Controller
         }
 
         // 4.3. Contatos Adicionais
-        if (!empty($data['contatos_adicionais'])) {
-            foreach ($data['contatos_adicionais'] as $contatoAdicional) {
-                // Tenta determinar o tipo do contato (simplificado)
-                $tipo = filter_var($contatoAdicional['valor'], FILTER_VALIDATE_EMAIL) ? 'email' : 'telefone';
-
-                $contatos[] = [
-                    'fornecedor_id' => $fornecedor->id,
-                    'contato' => $contatoAdicional['valor'],
-                    'tipo_contato' => $tipo,
-                    'rotulo' => $contatoAdicional['rotulo'] ?? 'Adicional',
-                    'principal' => false,
-                ];
+        if (!empty($data['contatos'])) {
+            $contatos = [];
+        
+            foreach ($data['contatos'] as $contatoAdicional) {
+                // Telefone adicional
+                if (!empty($contatoAdicional['telefone_adicional'])) {
+                    $contatos[] = [
+                        'fornecedor_id' => $fornecedor->id,
+                        'nome' => $contatoAdicional['nome_adicional'] ?? null,
+                        'cargo' => $contatoAdicional['cargo_adicional'] ?? null,
+                        'empresa' => $contatoAdicional['empresa_adicional'] ?? null,
+                        'contato' => $contatoAdicional['telefone_adicional'],
+                        'tipo_contato' => 'telefone',
+                        'rotulo' => $contatoAdicional['tipo_telefone_adicional'] ?? 'Adicional',
+                        'principal' => false,
+                    ];
+                }
+        
+                // E-mail adicional
+                if (!empty($contatoAdicional['email_adicional'])) {
+                    $contatos[] = [
+                        'fornecedor_id' => $fornecedor->id,
+                        'nome' => $contatoAdicional['nome_adicional'] ?? null,
+                        'cargo' => $contatoAdicional['cargo_adicional'] ?? null,
+                        'empresa' => $contatoAdicional['empresa_adicional'] ?? null,
+                        'contato' => $contatoAdicional['email_adicional'],
+                        'tipo_contato' => 'email',
+                        'rotulo' => $contatoAdicional['tipo_email_adicional'] ?? 'Adicional',
+                        'principal' => false,
+                    ];
+                }
             }
         }
+        
         
         // Inserção em massa na tabela contatos
         Contato::insert($contatos); 

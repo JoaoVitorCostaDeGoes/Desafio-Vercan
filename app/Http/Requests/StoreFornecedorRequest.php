@@ -17,7 +17,6 @@ class StoreFornecedorRequest extends FormRequest
 
     public function rules(): array
     {
-        
         $tipoPessoa = $this->input('tipoPessoa'); 
 
         $rules = [

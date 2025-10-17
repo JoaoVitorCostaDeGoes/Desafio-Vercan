@@ -84,7 +84,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="situacaoCnpj">Situação CNPJ</label>
-                                    <input type="text" class="form-control" id="situacaoCnpj" name="situacao_cnpj" disabled placeholder="">
+                                    <input type="text" class="form-control" id="situacaoCnpj" name="situacao_cnpj" readonly placeholder="">
                                 </div>
                             </div>
                             
@@ -165,7 +165,7 @@
                                 <label>Tipo<span style="color:red">*</span></label>
                                 <select id="tipo_telefone" class="form-control" name="tipo_telefone">
                                     <option value="Selecione" selected>Selecione</option>
-                                    <option value="residencial" selected>Residencial</option>
+                                    <option value="residencial" >Residencial</option>
                                     <option value="comercial">Comercial</option> 
                                     <option value="celular">Celular</option> 
                                 </select>
@@ -178,7 +178,7 @@
                                 <label>Tipo</label>
                                 <select id="tipo_email" class="form-control" name="tipo_email">
                                     <option value="Selecione" selected>Selecione</option>
-                                    <option value="pessoal" selected>Pessoal</option>
+                                    <option value="pessoal" >Pessoal</option>
                                     <option value="comercial">Comercial</option> 
                                     <option value="outro">Outro</option> 
                                 </select>
@@ -315,7 +315,7 @@
         </div>
 
         <div class="mt-3 mb-4">
-            <button type="submit" class="btn btn-success" onclick="validarParaEnviar(event)"><i class="fas fa-plus"></i> Cadastrar</button>
+            <button type="button" class="btn btn-success" onclick="validarParaEnviar(event)"><i class="fas fa-plus"></i> Cadastrar</button>
         </div>
     </form>
 @endsection

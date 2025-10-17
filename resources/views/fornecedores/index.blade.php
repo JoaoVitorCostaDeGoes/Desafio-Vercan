@@ -37,7 +37,7 @@
 
                     @else
                         <td>{{ $fornecedor['pessoa_juridica']['razao_social'] }}</td>
-                        <td>{{ $fornecedor['pessoa_juridica']['fantasia'] }}</td>
+                        <td>{{ $fornecedor['pessoa_juridica']['nome_fantasia'] }}</td>
                         <td>{{ $fornecedor['pessoa_juridica']['cnpj'] }}</td>
 
                         @if($fornecedor['pessoa_juridica']['ativo'])

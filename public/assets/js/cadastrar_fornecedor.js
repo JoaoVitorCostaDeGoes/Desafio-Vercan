@@ -256,9 +256,9 @@ function configurarUFAndCidades() {
 
 // funcoes de validar todos os campos
 function validarParaEnviar(event) {
-    //event.preventDefault(); 
-    //const formularioValido = validarFormulario();
-   // if (formularioValido)
+    event.preventDefault(); 
+    const formularioValido = validarFormulario();
+    if (formularioValido)
         $('form').submit(); 
 }
 
@@ -477,26 +477,26 @@ function criarBlocoContato(index) {
         <div class="row">
             <div class="form-group col-md-4">
                 <label>Nome</label>
-                <input type="text" class="form-control" name="contatos[${index}][nome_adicional]">
+                <input type="text" class="form-control" name="contatos_adicionais[${index}][nome_adicional]">
             </div>
             <div class="form-group col-md-4">
                 <label>Empresa</label>
-                <input type="text" class="form-control" name="contatos[${index}][empresa_adicional]">
+                <input type="text" class="form-control" name="contatos_adicionais[${index}][empresa_adicional]">
             </div>
             <div class="form-group col-md-4">
                 <label>Cargo</label>
-                <input type="text" class="form-control" name="contatos[${index}][cargo_adicional]">
+                <input type="text" class="form-control" name="contatos_adicionais[${index}][cargo_adicional]">
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-md-3">
                 <label>Telefone</label>
-                <input type="tel" class="form-control" name="contatos[${index}][telefone_adicional]">
+                <input type="tel" class="form-control" name="contatos_adicionais[${index}][telefone_adicional]">
             </div>
             <div class="form-group col-md-3">
                 <label>Tipo</label>
-                <select class="form-control" name="contatos[${index}][tipo_telefone_adicional]">
+                <select class="form-control" name="contatos_adicionais[${index}][tipo_telefone_adicional]">
                     <option value="">Selecione</option>
                     <option value="residencial">Residencial</option>
                     <option value="comercial">Comercial</option>
@@ -505,11 +505,11 @@ function criarBlocoContato(index) {
             </div>
             <div class="form-group col-md-3">
                 <label>E-mail</label>
-                <input type="email" class="form-control" name="contatos[${index}][email_adicional]">
+                <input type="email" class="form-control" name="contatos_adicionais[${index}][email_adicional]">
             </div>
             <div class="form-group col-md-3">
                 <label>Tipo</label>
-                <select class="form-control" name="contatos[${index}][tipo_email_adicional]">
+                <select class="form-control" name="contatos_adicionais[${index}][tipo_email_adicional]">
                     <option value="">Selecione</option>
                     <option value="pessoal">Pessoal</option>
                     <option value="comercial">Comercial</option>
