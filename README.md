@@ -52,7 +52,7 @@ Siga a ordem dos comandos para configurar e rodar o projeto localmente.
 * Email: teste@admin.com
 * Senha: 123456
 
-* Observação: Se ao acessar o projeto a estilização do CSS do AdminLTE não carregar corretamente, execute php artisan adminlte:install e reinicie o servidor com php artisan serve. 
+## Observação: Se ao acessar o projeto a estilização do CSS do AdminLTE não carregar corretamente, execute php artisan adminlte:install e reinicie o servidor com php artisan serve. 
 
 
 
