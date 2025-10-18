@@ -14,6 +14,7 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        //$response->assertStatus(200); descoberto erro de retorno esperado, devido redirecionamento do laravel UI para login quando acesso as rotas nao fosse autenticado!
+        $response->assertRedirect();
     }
 }
