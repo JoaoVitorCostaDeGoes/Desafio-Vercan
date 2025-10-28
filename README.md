@@ -8,8 +8,8 @@ Idealizado como teste prático para avaliação técnica.
 
 ## 🚀 Tecnologias Utilizadas
 
-* **PHP** `^8.2`
-* **Laravel** `^12`
+* **PHP** `8.2`
+* **Laravel** `12`
 * **Laravel UI** (autenticação e telas de login)
 * **AdminLTE** (painel administrativo)
 * **Vite** (bundler de assets frontend)
@@ -46,13 +46,12 @@ Siga a ordem dos comandos para configurar e rodar o projeto localmente.
 * Execute php artisan db:seed para popular as tabelas com dados mockados
 * Execute npm install para instalar dependências frontend
 * Execute npm run build para compilar os assets
+* Executar o comando php artisan adminlte:install, e quando apos a instalacao for concluida e a pergunta de substituicao de arquivos aparecer como : "Config file was already published. Want to replace it?", selecionar a opção 'no'.
 * Inicie o servidor com php artisan serve
 
 ## Credenciais de teste:
 * Email: teste@admin.com
 * Senha: 123456
-
-## Observação: Se ao acessar o projeto a estilização do CSS do AdminLTE não carregar corretamente, execute php artisan adminlte:install e reinicie o servidor com php artisan serve. 
 
 
 
