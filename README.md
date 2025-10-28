@@ -39,7 +39,7 @@ Siga a ordem dos comandos para configurar e rodar o projeto localmente.
 * Clone o projeto e acesse a pasta
 * Renomeie o arquivo .env-example para .env
 * Abra o Laragon e inicie todos os serviços (Apache, MySQL)
-* Abra o terminal e na pasta onde o projeto foi baixado, execute o comando composer setup - este comando executa automaticamente:
+* Caso nao tenha a variavel de ambiente ja configurada, pelo terminal do Laragon navegue ate a pasta onde o projeto foi baixado , execute o comando composer setup - este comando executa automaticamente:
     * composer install (instala dependências PHP)
     * php artisan key:generate (gera chave da aplicação)
     * php artisan migrate (executa migrações do banco)
